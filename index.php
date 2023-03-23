@@ -1,31 +1,21 @@
 <?php
 require ('./config/db.php');
-header('Content-type: text/html; charset=UTF-8');
 
-$file = 'countries.json';
-$dict_file = 'dictionary.json';
-$dict = (json_decode(file_get_contents($dict_file)))->dictionary;
-
-if (isset($_GET['countrie'])) {
-  $content = json_decode(file_get_contents($file));
-  if (in_array($_GET['countrie'], $dict)) {
-    $content->countries[] = $_GET['countrie'];
-    file_put_contents($file, json_encode($content));
+if (isset($_GET['reg'])) {
+  $res = query('SELECT * FROM users WHERE login = :l', [':l' => $_GET['login']]);
+  if ($res) {
+    echo "Error: This login is duplicate on db";
   } else {
-    echo "Error";
+    $res = query('INSERT INTO users (login, pass) VALUE (:login, :pass)', [':login' => $_GET['login'], ':pass' => $_GET['pass']]);
   }
+  header('Location: /Site');
 }
 
-$fContentCountries = json_decode(file_get_contents($file));
 ?>
+
 <form>
-  <input type="text" name="countrie" /><br />
+  <input type="text" name=login placeholder="Login" /><br />
+  <input type="password" name=pass placeholder="Password" /><br />
+  <input type=hidden name=reg value="1" />
   <button>Submit</button>
 </form>
-
-<select>
-  <option selected disabled>Список стран</option>
-  <?php for ($i = 0; $i < count($fContentCountries->countries); $i++) { ?>
-  <option value="<?= $i; ?>"><?= $fContentCountries->countries[$i]; ?></option>
-  <?php } ?>
-</select>
