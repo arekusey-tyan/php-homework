@@ -131,7 +131,7 @@ if (!empty($_GET['red']) || !empty($_GET['green']) || !empty($_GET['blue'])) {
 <div>
   <form>
     <span>
-      <input type="number" name="month" min=1 max=12 value=<?= +$_GET['month']; ?> />
+      <input type="number" name="month" min=1 max=12 value=<?= isset($_GET['month']) ? +$_GET['month']: 0; ?> />
     </span>
     <span>
       <button>Get month</button>
